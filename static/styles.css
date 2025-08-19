@@ -25,14 +25,19 @@ header {
     border-bottom: 2px solid #007cf0;
     border-top: none;
 }
-
 footer {
     border-top: 2px solid #00dfd8;
     border-bottom: none;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
 }
 
+/* Use clamp for better cross-browser support */
 h1 {
-    font-size: 7rem;
+    font-size: clamp(2.5rem, 20vw, 7rem);
     color: #333;
     margin: 0;
 }
