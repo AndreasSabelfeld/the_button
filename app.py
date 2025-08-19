@@ -100,6 +100,4 @@ if __name__ == "__main__":
     init_db()
     socketio.run(app, 
                  debug=True, 
-                 host="0.0.0.0", 
-                 port=5100, 
                  allow_unsafe_werkzeug=True)  # nötig bei SocketIO + Flask 2.3+
