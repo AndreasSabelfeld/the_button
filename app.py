@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-subscribers = []  # für SSE-Clients
 
 def get_db_connection():
     conn = sqlite3.connect("the_button.db")
