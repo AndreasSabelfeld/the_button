@@ -1,7 +1,7 @@
 // Author: Andreas Sabelfeld
 // Date: Tue 19th August 2025
 
-const socket = io("http://192.168.1.127:5100");
+const socket = io();
 
 const button = document.getElementById("theButton");
 
