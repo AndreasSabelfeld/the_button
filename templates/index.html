@@ -1,0 +1,46 @@
+<!Doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>The Button</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+        <h1>The Button</h1>
+        <nav>
+            <ul>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#register">Register</a></li>
+            </ul>
+            <div id="currentUser" style="float: right;"></div>
+        </nav>
+    </head>
+    <body>
+        <!-- Register Overlay -->
+        <div id="registerOverlay" class="overlay" style="display: none;">
+            <div class="overlay-content">
+                <h2>Register</h2>
+                <input type="text" id="registerUsernameInput" placeholder="Enter username">
+                <button id="registerBtn">Submit</button>
+                <button id="closeRegisterOverlayBtn">Close</button>
+            </div>
+        </div>
+
+        <!-- Login Overlay -->
+        <div id="loginOverlay" class="overlay" style="display: none;">
+            <div class="overlay-content">
+                <h2>Login</h2>
+                <input type="text" id="loginUsernameInput" placeholder="Enter username">
+                <button id="loginBtn">Submit</button>
+                <button id="closeLoginOverlayBtn">Close</button>
+            </div>
+        </div>
+
+        <button id="theButton">Press me!</button>
+        <div id="num"></div>
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+        <script src="/static/frontend.js"></script>
+    </body>
+    <footer>
+        <p>&copy;Andreas Sabelfeld - 2025</p>
+    </footer>
+</html>
