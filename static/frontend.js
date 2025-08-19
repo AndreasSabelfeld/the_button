@@ -12,7 +12,7 @@ const loginOverlay = document.getElementById("loginOverlay");
 const loginUsernameInput = document.getElementById("loginUsernameInput");
 
 let userId; 
-let currentUsername = "";
+let currentUsername;
 
 socket.on("update_presses", () => {
     load_presses();
@@ -87,7 +87,9 @@ button.addEventListener("click", async () => {
 
 async function showCurrentUser(username) {
     currentUsername = username; // save the username
+    localStorage.setItem("username", username);
     userId = await fetchUserId(username); // fetch user ID asynchronously
+    localStorage.setItem("user_id", userId);
     document.getElementById("currentUser").textContent = "Logged in as: " + username;
 }
 
@@ -111,6 +113,10 @@ async function load_presses() {
     const container = document.getElementById("num");
     container.textContent = data.total_presses;
 }
+
+userId = localStorage.getItem("user_id") || null;
+currentUsername = localStorage.getItem("username") || "";
+showCurrentUser(currentUsername);
 
 load_presses();
 
