@@ -4,14 +4,16 @@
         <meta charset="UTF-8">
         <title>The Button</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        
 
-        <h1>The Button</h1>
+        <div id="currentUser"></div>
+
+        <h1>THE BUTTON</h1>
         <nav>
             <ul>
                 <li><a href="#login">Login</a></li>
                 <li><a href="#register">Register</a></li>
             </ul>
-            <div id="currentUser" style="float: right;"></div>
         </nav>
     </head>
     <body>
@@ -20,8 +22,10 @@
             <div class="overlay-content">
                 <h2>Register</h2>
                 <input type="text" id="registerUsernameInput" placeholder="Enter username">
-                <button id="registerBtn">Submit</button>
-                <button id="closeRegisterOverlayBtn">Close</button>
+                <div class="button-container">
+                    <button id="registerBtn">Submit</button>
+                    <button id="closeRegisterOverlayBtn">Close</button>
+                </div>
             </div>
         </div>
 
@@ -30,13 +34,16 @@
             <div class="overlay-content">
                 <h2>Login</h2>
                 <input type="text" id="loginUsernameInput" placeholder="Enter username">
-                <button id="loginBtn">Submit</button>
-                <button id="closeLoginOverlayBtn">Close</button>
+                <div class="button-container">
+                    <button id="loginBtn">Submit</button>
+                    <button id="closeLoginOverlayBtn">Close</button>
+                </div>
             </div>
         </div>
 
         <button id="theButton">Press me!</button>
         <div id="num"></div>
+        <h3>... times has THE BUTTON been pressed</h3>
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="/static/frontend.js"></script>
     </body>
