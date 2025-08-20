@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-family: 'Inter', 'Roboto', Arial, sans-serif;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,7 +62,7 @@ ul {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 32px;
+    gap: clamp(16px, 5vw, 32px);  /* dynamischer Abstand */
 }
 
 a {
@@ -82,9 +82,36 @@ ul li {
     font-size: 1.2rem;
     color: #007cf0;
     background: #e3f2fd;
-    padding: 10px 20px;
     border-radius: 1em;
     box-shadow: 0 2px 8px rgba(0, 124, 240, 0.08);
+}
+
+nav ul {
+    display: flex;
+    flex-direction: row; /* horizontal */
+    justify-content: center; /* zentriert die Links */
+    gap: 24px; /* Abstand zwischen den Links */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-flex; /* hält die Links horizontal */
+}
+
+nav ul li a {
+    display: inline-block;
+    text-decoration: none;
+    color: #009688;
+    padding: 8px 20px;
+    white-space: nowrap; /* verhindert Zeilenumbruch */
+    transition: color 0.2s;
+}
+
+nav ul li a:hover,
+nav ul li a:focus {
+    color: #00796b;
 }
 
 .overlay {
@@ -194,6 +221,7 @@ button:hover, button:focus {
         padding: 12vw 4vw;
         border-radius: 6vw;
     }
+    
     .focus-button {
         width: 90vw;
         height: 20vw;
@@ -201,5 +229,31 @@ button:hover, button:focus {
         max-width: none;
         max-height: none;
         margin: 8vw 0;
+    }
+
+    body {
+        flex-direction: column; /* schon da, passt */
+        padding: 0 4vw;         /* horizontalen Rand */
+    }
+
+    ul {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    #theButton {
+        width: 90vw;
+        height: 18vw;
+        font-size: 6vw;
+        margin: 4vw 0;
+    }
+
+    #num {
+        font-size: 12vw;
+        margin-top: 4vw;
+    }
+
+    header, footer {
+        padding: 4vw 0;
     }
 }
