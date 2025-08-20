@@ -4,7 +4,7 @@ import sqlite3, time
 import os
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="https://the-button-qqsp.onrender.com")
 
 def get_db_connection():
     conn = sqlite3.connect("the_button.db")
@@ -99,7 +99,6 @@ if __name__ == "__main__":
 
     init_db()
     socketio.run(app, 
-                 debug=True, 
                  host="0.0.0.0", 
                  port=port, 
                  allow_unsafe_werkzeug=True)  # nötig bei SocketIO + Flask 2.3+

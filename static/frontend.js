@@ -1,7 +1,7 @@
 // Author: Andreas Sabelfeld
 // Date: Tue 19th August 2025
 
-const socket = io("https://the-button-qqsp.onrender.com");
+const socket = io();
 
 const button = document.getElementById("theButton");
 
