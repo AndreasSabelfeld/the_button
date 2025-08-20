@@ -70,6 +70,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     const data = await res.json();
     if (data.success) {
         alert("Login successful!");
+        showCurrentUser(username);  
         document.getElementById("currentUser").textContent = "Logged in as: " + username;
         loginOverlay.style.display = "none";
         loginUsernameInput.value = "";
