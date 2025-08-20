@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, Response
 from flask_socketio import SocketIO, emit
 import sqlite3, time
-from datetime import datetime, timezone
+import os
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -59,7 +59,6 @@ def login():
     conn.close()
 
     if row:
-        # Optional: Session setzen, z.B. session["user_id"] = row["id"]
         return jsonify({"success": True, "user_id": row["id"]})
     else:
         return jsonify({"success": False, "error": "Username not found"})
@@ -96,9 +95,11 @@ def increment(user_id: int) -> Response:
     return jsonify({"success": True}), 201
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5100))
+
     init_db()
     socketio.run(app, 
                  debug=True, 
                  host="0.0.0.0", 
-                 port=5100, 
+                 port=port, 
                  allow_unsafe_werkzeug=True)  # nötig bei SocketIO + Flask 2.3+
