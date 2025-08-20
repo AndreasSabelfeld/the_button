@@ -3,3 +3,4 @@ flask_socketio
 eventlet>=0.24.1
 gunicorn
 supabase
+dotenv
