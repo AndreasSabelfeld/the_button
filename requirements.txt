@@ -1,3 +1,4 @@
 flask
 flask_socketio
+eventlet>=0.24.1s
 gunicorn
