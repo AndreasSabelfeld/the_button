@@ -7,7 +7,7 @@ from supabase import create_client, Client
 load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="https://the-button-qqsp.onrender.com")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Supabase Client
 SUPABASE_URL = os.environ["SUPABASE_URL"]
@@ -53,8 +53,22 @@ def login():
 
 @app.route("/num", methods=["GET"])
 def get_presses():
-    total = get_total_presses()
-    return jsonify({"total_presses": total})
+    try:
+        total = get_total_presses()
+        return jsonify({"total_presses": total})
+    except Exception as e:
+        print("Error in /num:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/get_user_id/<username>", methods=["GET"])
+def get_user_id(username: str):
+    user = supabase.table("users").select("id").eq("username", username).execute()
+
+    if user.data:
+        return jsonify({"id": user.data[0]["id"]})
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 @app.route("/press/<int:user_id>", methods=["POST"])
 def press(user_id: int):
@@ -71,4 +85,4 @@ def press(user_id: int):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5100))
-    socketio.run(app, host="0.0.0.0", port=port)
+    socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)

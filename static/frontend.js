@@ -1,7 +1,7 @@
 // Author: Andreas Sabelfeld
 // Date: Tue 19th August 2025
 
-const socket = io("https://the-button-qqsp.onrender.com");
+const socket = io(window.location.origin);
 
 const button = document.getElementById("theButton");
 
@@ -14,7 +14,7 @@ const loginUsernameInput = document.getElementById("loginUsernameInput");
 let userId; 
 let currentUsername;
 
-socket.on("update_presses", () => {
+socket.on("update", () => {
     load_presses();
 });
 
@@ -70,10 +70,6 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     const data = await res.json();
     if (data.success) {
         alert("Login successful!");
-        userId = data.user_id;  // 👈 direkt hier setzen
-        currentUsername = username;
-        localStorage.setItem("user_id", userId);
-        localStorage.setItem("username", username);
         document.getElementById("currentUser").textContent = "Logged in as: " + username;
         loginOverlay.style.display = "none";
         loginUsernameInput.value = "";
