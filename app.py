@@ -1,27 +1,24 @@
-from flask import Flask, request, jsonify, render_template, Response
-from flask_socketio import SocketIO, emit
-import sqlite3, time
+from dotenv import load_dotenv
+from flask import Flask, request, jsonify, render_template
+from flask_socketio import SocketIO
 import os
+from supabase import create_client, Client
+
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="https://the-button-qqsp.onrender.com")
 
-def get_db_connection():
-    conn = sqlite3.connect("the_button.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+# Supabase Client
+SUPABASE_URL = os.environ["SUPABASE_URL"]
+SUPABASE_KEY = os.environ["SUPABASE_ANON_KEY"]
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def init_db():
-    conn = get_db_connection()
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            presses INTEGER DEFAULT 0
-        )
-    """)
-    conn.commit()
-    conn.close()
+def get_total_presses() -> int:
+    """Returns the sum of all presses."""
+    result = supabase.table("users").select("presses").execute()
+    total = sum([r["presses"] for r in result.data])
+    return total
 
 @app.route("/")
 def index():
@@ -31,74 +28,47 @@ def index():
 def register():
     data = request.get_json()
     username = data.get("username")
-
     if not username:
-        return jsonify({"success": False, "error": "Username required"})
+        return jsonify({"success": False, "error": "Username required"}), 400
 
-    conn = get_db_connection()
-    try:
-        conn.execute("INSERT INTO users (username, presses) VALUES (?, 0)", (username,))
-        conn.commit()
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "Username already exists"}), 409
-    finally:
-        conn.close()
+    existing = supabase.table("users").select("*").eq("username", username).execute()
+    if existing.data:
+        return jsonify({"success": False, "error": "Username already exists"}), 409
 
+    supabase.table("users").insert({"username": username, "presses": 0}).execute()
     return jsonify({"success": True}), 201
 
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     username = data.get("username")
-
     if not username:
-        return jsonify({"success": False, "error": "Username required"})
+        return jsonify({"success": False, "error": "Username required"}), 400
 
-    conn = get_db_connection()
-    row = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-    conn.close()
-
-    if row:
-        return jsonify({"success": True, "user_id": row["id"]})
+    user = supabase.table("users").select("*").eq("username", username).execute()
+    if user.data:
+        return jsonify({"success": True, "user_id": user.data[0]["id"]})
     else:
-        return jsonify({"success": False, "error": "Username not found"})
-
-
-@app.route("/get_user_id/<username>", methods=["GET"])
-def get_user_id(username):
-    conn = get_db_connection()
-    row = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-    conn.close()
-    if row:
-        return jsonify({"id": row["id"]})
-    else:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"success": False, "error": "Username not found"}), 404
 
 @app.route("/num", methods=["GET"])
-def get_presses() -> int:
-    conn = get_db_connection()
-    row = conn.execute("SELECT SUM(presses) AS total_presses FROM users;").fetchone()
-    conn.close()
-    presses = row[0] if row[0] is not None else 0  # handle NULL
-    return jsonify({"total_presses": presses})
+def get_presses():
+    total = get_total_presses()
+    return jsonify({"total_presses": total})
 
 @app.route("/press/<int:user_id>", methods=["POST"])
-def increment(user_id: int) -> Response:
-    conn = get_db_connection()
-    conn.execute("UPDATE users SET presses = presses + 1 WHERE id = ?;", (user_id,))
-    conn.commit()
-    conn.close()
+def press(user_id: int):
+    user = supabase.table("users").select("*").eq("id", user_id).execute()
+    if not user.data:
+        return jsonify({"success": False, "error": "User not found"}), 404
 
-    # Notify all SSE clients
-    socketio.emit("update_presses")
+    new_count = user.data[0]["presses"] + 1
+    supabase.table("users").update({"presses": new_count}).eq("id", user_id).execute()
 
-    return jsonify({"success": True}), 201
+    # Notify all clients
+    socketio.emit("update", {"total_presses": get_total_presses()})
+    return jsonify({"success": True, "total_presses": new_count}), 201
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5100))
-
-    init_db()
-    socketio.run(app, 
-                 host="0.0.0.0", 
-                 port=port, 
-                 allow_unsafe_werkzeug=True)  # nötig bei SocketIO + Flask 2.3+
+    socketio.run(app, host="0.0.0.0", port=port)
