@@ -97,7 +97,6 @@ button.addEventListener("click", async () => {
     if (!userId) return alert("Please log in first");
 
     await fetch(`/press/${userId}`, { method: "POST" });
-    load_presses();
 });
 
 async function deleteAccount() {

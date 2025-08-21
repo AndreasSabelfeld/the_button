@@ -86,7 +86,7 @@ def press(user_id: int):
         return jsonify({"success": False, "error": "User not found"}), 404
 
     new_count = user.data[0]["presses"] + 1
-    supabase.table("users").update({"presses": new_count}).eq("id", user_id).execute()
+    supabase.rpc("increment_presses", {"p_user_id": user_id}).execute()
 
     # Notify all clients
     socketio.emit("update", {"total_presses": get_total_presses()})
