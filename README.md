@@ -1,7 +1,5 @@
 # The Button
 
-(This README is AI generated)
-
 A simple web application featuring a single interactive button.
 
 ## Features
