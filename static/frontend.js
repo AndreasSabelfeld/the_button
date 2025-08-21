@@ -10,6 +10,7 @@ const usernameInput = document.getElementById("registerUsernameInput");
 
 const loginOverlay = document.getElementById("loginOverlay");
 const loginUsernameInput = document.getElementById("loginUsernameInput");
+const profileOverlay = document.getElementById("profileOverlay");
 
 let userId; 
 let currentUsername;
@@ -71,12 +72,25 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     if (data.success) {
         alert("Login successful!");
         showCurrentUser(username);  
-        document.getElementById("currentUser").textContent = "Logged in as: " + username;
         loginOverlay.style.display = "none";
         loginUsernameInput.value = "";
     } else {
         alert("Error: " + data.error);
     }
+});
+
+document.querySelector('a[href="#profile"]').addEventListener("click", (e) => {
+    e.preventDefault();
+    profileOverlay.style.display = "flex";
+    getPersonalPresses();
+});
+
+document.getElementById("closeProfileOverlayBtn").addEventListener("click", () => {
+    profileOverlay.style.display = "none";
+});
+
+document.getElementById("deleteAccBtn").addEventListener("click", () => {
+    deleteAccount()
 });
 
 button.addEventListener("click", async () => {
@@ -86,12 +100,50 @@ button.addEventListener("click", async () => {
     load_presses();
 });
 
+async function deleteAccount() {
+    // shouldnt work yet
+    return alert("This feature is not implemented yet");
+
+    if (!userId) return alert("Please log in first");
+    const res = await fetch(`/delete_account/${userId}`, { method: "DELETE" });
+    if (res.ok) {
+        alert("Account deleted successfully");
+        localStorage.removeItem("username");
+        localStorage.removeItem("user_id");
+        currentUsername = "";
+        userId = null;
+        document.getElementById("currentUser").textContent = "Not logged in";
+        document.getElementById("currentUserOverlay").textContent = "";
+        document.getElementById("profileUserId").textContent = "";
+        load_presses();
+    } else {
+        const data = await res.json();
+        alert("Error deleting account: " + data.error);
+    }
+}
+
+async function getPersonalPresses() {
+    if (!userId) return alert("Please log in first");
+
+    try {
+        const res = await fetch(`/get_user_presses/${userId}`);
+        if (!res.ok) throw new Error("Failed to fetch personal clicks");
+
+        const data = await res.json();
+        document.getElementById("personalClicks").textContent = data.presses || 0;
+    } catch (err) {
+        console.error(err);
+        alert("Error fetching personal clicks");
+    }
+}
+
 async function showCurrentUser(username) {
     currentUsername = username; // save the username
     localStorage.setItem("username", username);
     userId = await fetchUserId(username); // fetch user ID asynchronously
     localStorage.setItem("user_id", userId);
     document.getElementById("currentUser").textContent = "Logged in as: " + username;
+    document.getElementById("currentUserOverlay").textContent = username;
 }
 
 async function fetchUserId(username) {

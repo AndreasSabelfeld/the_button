@@ -69,6 +69,15 @@ def get_user_id(username: str):
         return jsonify({"id": user.data[0]["id"]})
     else:
         return jsonify({"error": "User not found"}), 404
+    
+@app.route("/get_user_presses/<user_id>", methods=["GET"])
+def get_user_presses(user_id: int):
+    presses = supabase.table("users").select("presses").eq("id", user_id).execute()
+
+    if presses.data:
+        return jsonify({"presses": presses.data[0]["presses"]})
+    else:
+        return jsonify({"error": "Presses not found"}), 404
 
 @app.route("/press/<int:user_id>", methods=["POST"])
 def press(user_id: int):

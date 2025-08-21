@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
         
 
-        <div id="currentUser"></div>
+        <a id="currentUser" href="#profile">Not logged in</a>
 
         <h1>THE BUTTON</h1>
         <nav>
@@ -38,6 +38,22 @@
                 <div class="button-container">
                     <button id="loginBtn">Submit</button>
                     <button id="closeLoginOverlayBtn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Overlay -->
+        <div id="profileOverlay" class="overlay" style="display: none;">
+            <div class="overlay-content">
+                <h2>
+                    Profile: <span id="currentUserOverlay"></span>
+                </h2>
+                <h3>
+                    You have pressed THE BUTTON: <span id="personalClicks"></span> times
+                </h3>
+                <div class="button-container">
+                    <button id="deleteAccBtn">Delete Acc</button>
+                    <button id="closeProfileOverlayBtn">Close</button>
                 </div>
             </div>
         </div>

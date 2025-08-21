@@ -212,8 +212,14 @@ button:hover, button:focus {
     color: #555;
     background: transparent;
     margin: 0;
-    pointer-events: none;
     z-index: 10;
+    cursor: pointer;
+}
+
+#currentUserOverlay {
+    font-size: 3rem;
+    color: #555;
+    margin: 16px 0;
 }
 
 @media (max-width: 600px) {
@@ -232,8 +238,8 @@ button:hover, button:focus {
     }
 
     body {
-        flex-direction: column; /* schon da, passt */
-        padding: 0 4vw;         /* horizontalen Rand */
+        flex-direction: column; 
+        padding: 0 4vw;         
     }
 
     ul {
