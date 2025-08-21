@@ -14,24 +14,28 @@ A simple web application featuring a single interactive button.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- [npm](https://www.npmjs.com/)
+- flask
+- flask_socketio
+- eventlet>=0.24.1
+- gunicorn
+- supabase
+- dotenv
 
 ### Installation
 
 ```bash
 git clone https://github.com/yourusername/the_button.git
 cd the_button
-npm install
+pip install requirements.txt
 ```
 
 ### Running the App
 
 ```bash
-npm start
+python app.py
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://192.168.1.127:5100](http://192.168.1.127:5100) in your browser.
 
 ## Project Structure
 
@@ -47,11 +51,6 @@ the_button/
 ├── the_button.db
 └── README.md
 ```
-
-## Scripts
-
-- `npm start` — Runs the app in development mode
-- `npm run build` — Builds the app for production
 
 ## License
 
