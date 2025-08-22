@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template
-from app.services import register_user, login_user, get_user_presses, get_user_id, get_total_user_presses, delete_user_account, increment_user_presses
+from app.services import register_user, login_user, get_user_presses, get_user_id, get_total_user_presses, delete_user_account, increment_user_presses, get_leaderboard
 
 routes = Blueprint("routes", __name__)
 
@@ -13,6 +13,10 @@ def index():
 def leaderboard():
     return render_template("leaderboard.html")
 
+
+@routes.route("/api/leaderboard", methods=["GET"])
+def build_leaderboard():
+    return get_leaderboard()
 
 @routes.route("/register", methods=["POST"])
 def register():

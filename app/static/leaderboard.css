@@ -1,0 +1,79 @@
+
+/* Leaderboard Container */
+#leaderboardDiv {
+    max-width: 500px;
+    max-height: 50vh; /* fixe Höhe, z. B. 70% des Viewports */
+    margin: 40px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, sans-serif;
+
+    overflow-y: auto; /* Scrollbar, wenn zu viele Einträge */
+    overflow-x: hidden; /* horizontal verhindern */
+}
+
+#leaderboardDiv::-webkit-scrollbar {
+    width: 8px;
+}
+
+#leaderboardDiv::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+#leaderboardDiv::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* Title (falls du ein h2 drüber setzt) */
+#leaderboardDiv h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+/* Ordered List */
+#leaderboardDiv ol {
+    list-style: none; /* entfernt Standardnummerierung */
+    padding: 0;
+    margin: 0;
+}
+
+/* List Items */
+#leaderboardDiv li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #444;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Hover Effekt */
+#leaderboardDiv li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Medals for top 3 */
+#leaderboardDiv li:nth-child(1) {
+    background: linear-gradient(45deg, #ffd700, #ffec8b);
+    font-weight: bold;
+}
+#leaderboardDiv li:nth-child(2) {
+    background: linear-gradient(45deg, #c0c0c0, #e0e0e0);
+    font-weight: bold;
+}
+#leaderboardDiv li:nth-child(3) {
+    background: linear-gradient(45deg, #cd7f32, #e6a57e);
+    font-weight: bold;
+}

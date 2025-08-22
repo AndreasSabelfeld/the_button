@@ -76,3 +76,8 @@ def increment_user_presses(user_id: int):
     # Notify all clients
     socketio.emit("update", {"total_presses": get_total_presses()})
     return jsonify({"success": True, "total_presses": new_count}), 201
+
+def get_leaderboard():
+    rows = supabase.table("users").select("username, presses").order("presses", desc=True).execute()
+    users = [{"username": row["username"], "presses": row["presses"]} for row in rows.data]
+    return jsonify({"success": True, "leaderboard": users})
