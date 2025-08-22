@@ -7,7 +7,8 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
         
 
-        <a id="currentUser" href="#profile">Not logged in</a>
+        <a id="currentUser" class="headInfo" href="#profile">Not logged in</a>
+        <a id="leaderboard" class="headInfo" href="/leaderboard">Leaderboard</a>
 
         <h1>THE BUTTON</h1>
         <nav>
@@ -58,11 +59,22 @@
             </div>
         </div>
 
+        <!-- Profile Overlay -->
+        <div id="areYouSureOverlay" class="overlay" style="display: none;">
+            <div class="overlay-content">
+                <h2>Do you really want to delete your account? (This action can't be reverted)</h2>
+                <div class="button-container">
+                    <button id="finalDeleteBtn">Delete Acc</button>
+                    <button id="closeSureOverlayBtn">Close</button>
+                </div>
+            </div>
+        </div>
+
         <button id="theButton">Press me!</button>
         <div id="num"></div>
         <h3>... times has THE BUTTON been pressed</h3>
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-        <script src="/static/frontend.js"></script>
+        <script src="/static/index.js"></script>
     </body>
     <footer>
         <p>&copy;Andreas Sabelfeld - 2025</p>

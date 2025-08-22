@@ -1,32 +1,9 @@
-from dotenv import load_dotenv
-from flask import Flask, request, jsonify, render_template
-from flask_socketio import SocketIO
-import os
-from supabase import create_client, Client
+from flask import jsonify
+from app import supabase, socketio
+from app.utils import get_total_presses
 
-load_dotenv()  # Load environment variables from .env file
 
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
-
-# Supabase Client
-SUPABASE_URL = os.environ["SUPABASE_URL"]
-SUPABASE_KEY = os.environ["SUPABASE_ANON_KEY"]
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-def get_total_presses() -> int:
-    """Returns the sum of all presses."""
-    result = supabase.table("users").select("presses").execute()
-    total = sum([r["presses"] for r in result.data])
-    return total
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
+def register_user(data):
     username = data.get("username")
     if not username:
         return jsonify({"success": False, "error": "Username required"}), 400
@@ -38,9 +15,8 @@ def register():
     supabase.table("users").insert({"username": username, "presses": 0}).execute()
     return jsonify({"success": True}), 201
 
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
+
+def login_user(data):
     username = data.get("username")
     if not username:
         return jsonify({"success": False, "error": "Username required"}), 400
@@ -50,18 +26,18 @@ def login():
         return jsonify({"success": True, "user_id": user.data[0]["id"]})
     else:
         return jsonify({"success": False, "error": "Username not found"}), 404
+    
 
-@app.route("/num", methods=["GET"])
-def get_presses():
+def get_total_user_presses() -> int:
+    """Returns the sum of all presses."""
     try:
         total = get_total_presses()
         return jsonify({"total_presses": total})
     except Exception as e:
         print("Error in /num:", e)
         return jsonify({"error": str(e)}), 500
+    
 
-
-@app.route("/get_user_id/<username>", methods=["GET"])
 def get_user_id(username: str):
     user = supabase.table("users").select("id").eq("username", username).execute()
 
@@ -70,17 +46,26 @@ def get_user_id(username: str):
     else:
         return jsonify({"error": "User not found"}), 404
     
-@app.route("/get_user_presses/<user_id>", methods=["GET"])
+
 def get_user_presses(user_id: int):
+    """Returns the number of presses for a specific user."""
     presses = supabase.table("users").select("presses").eq("id", user_id).execute()
 
     if presses.data:
         return jsonify({"presses": presses.data[0]["presses"]})
     else:
         return jsonify({"error": "Presses not found"}), 404
+    
 
-@app.route("/press/<int:user_id>", methods=["POST"])
-def press(user_id: int):
+def delete_user_account(user_id: int):
+    user = supabase.table("users").select("*").eq("id", user_id).execute()
+    if not user.data:
+        return jsonify({"success": False, "error": "User not found"}), 404
+
+    supabase.table("users").delete().eq("id", user_id).execute()
+    return jsonify({"success": True}), 200
+
+def increment_user_presses(user_id: int):
     user = supabase.table("users").select("*").eq("id", user_id).execute()
     if not user.data:
         return jsonify({"success": False, "error": "User not found"}), 404
@@ -91,7 +76,3 @@ def press(user_id: int):
     # Notify all clients
     socketio.emit("update", {"total_presses": get_total_presses()})
     return jsonify({"success": True, "total_presses": new_count}), 201
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5100))
-    socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)

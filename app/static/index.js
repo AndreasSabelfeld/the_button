@@ -11,6 +11,7 @@ const usernameInput = document.getElementById("registerUsernameInput");
 const loginOverlay = document.getElementById("loginOverlay");
 const loginUsernameInput = document.getElementById("loginUsernameInput");
 const profileOverlay = document.getElementById("profileOverlay");
+const areYouSureOverlay = document.getElementById("areYouSureOverlay");
 
 let userId; 
 let currentUsername;
@@ -90,7 +91,16 @@ document.getElementById("closeProfileOverlayBtn").addEventListener("click", () =
 });
 
 document.getElementById("deleteAccBtn").addEventListener("click", () => {
-    deleteAccount()
+    areYouSureOverlay.style.display = "flex";
+});
+
+document.getElementById("finalDeleteBtn").addEventListener("click", () => {
+    deleteAccount();
+    areYouSureOverlay.style.display = "none";
+});
+
+document.getElementById("closeSureOverlayBtn").addEventListener("click", () => {
+    areYouSureOverlay.style.display = "none";
 });
 
 button.addEventListener("click", async () => {
@@ -100,9 +110,6 @@ button.addEventListener("click", async () => {
 });
 
 async function deleteAccount() {
-    // shouldnt work yet
-    return alert("This feature is not implemented yet");
-
     if (!userId) return alert("Please log in first");
     const res = await fetch(`/delete_account/${userId}`, { method: "DELETE" });
     if (res.ok) {

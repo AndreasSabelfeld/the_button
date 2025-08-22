@@ -203,16 +203,27 @@ button:hover, button:focus {
     margin-top: 16px;
 }
 
-#currentUser {
+.headInfo {
     position: absolute;
     top: 16px;
-    right: 32px;
     font-size: 1.2rem;
     color: #555;
     background: transparent;
     margin: 0;
     z-index: 10;
     cursor: pointer;
+}
+
+#currentUser {
+    right: 32px;
+}
+
+#leaderboard {
+    left: 32px;
+}
+
+#back {
+    left: 32px;
 }
 
 #currentUserOverlay {
